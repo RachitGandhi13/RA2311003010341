@@ -1,8 +1,8 @@
 "use client";
 import {
-  AppBar, Toolbar, Typography, Button, Box,
-  IconButton, Drawer, List, ListItemButton, ListItemIcon,
-  ListItemText, Divider,
+  AppBar, Toolbar, Typography, Box,
+  IconButton, Drawer, List, ListItemButton,
+  ListItemIcon, ListItemText, Divider,
 } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import NotificationsActiveIcon from "@mui/icons-material/NotificationsActive";
@@ -12,6 +12,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
+
+const SIDEBAR_BG    = "#0F172A";
+const SIDEBAR_ACTIVE = "#4F46E5";
 
 const NAV_LINKS = [
   { label: "All Notifications", href: "/all-notifications", icon: <NotificationsIcon fontSize="small" /> },
@@ -24,67 +27,50 @@ export default function NavBar() {
 
   return (
     <>
-      <AppBar position="sticky" elevation={0} sx={{ bgcolor: "primary.dark" }}>
-        <Toolbar sx={{ gap: 1, minHeight: { xs: 56, sm: 64 } }}>
-          {/* Brand */}
+      {/* Mobile-only top bar */}
+      <AppBar
+        position="sticky"
+        elevation={0}
+        sx={{
+          display: { xs: "flex", lg: "none" },
+          bgcolor: SIDEBAR_BG,
+        }}
+      >
+        <Toolbar sx={{ gap: 1, minHeight: { xs: 56, sm: 60 } }}>
           <Box sx={{ display: "flex", alignItems: "center", gap: 1.25, flexGrow: 1 }}>
-            <NotificationsActiveIcon sx={{ fontSize: 26, opacity: 0.95 }} />
-            <Box sx={{ lineHeight: 1 }}>
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: "8px",
+                bgcolor: SIDEBAR_ACTIVE,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexShrink: 0,
+              }}
+            >
+              <NotificationsActiveIcon sx={{ fontSize: 18, color: "white" }} />
+            </Box>
+            <Box>
               <Typography
-                variant="h6"
-                component="span"
-                sx={{ fontWeight: 700, letterSpacing: 0.3, display: "block", lineHeight: 1.15 }}
+                variant="subtitle1"
+                sx={{ color: "white", fontWeight: 700, lineHeight: 1.2, fontSize: "0.95rem" }}
               >
                 AffordMed
               </Typography>
               <Typography
                 variant="caption"
-                component="span"
-                sx={{ opacity: 0.65, display: "block", lineHeight: 1, fontSize: "0.68rem" }}
+                sx={{ color: "rgba(255,255,255,0.4)", display: "block", lineHeight: 1, fontSize: "0.62rem" }}
               >
                 Campus Notifications
               </Typography>
             </Box>
           </Box>
 
-          {/* Desktop nav */}
-          <Box sx={{ display: { xs: "none", sm: "flex" }, gap: 0.75 }}>
-            {NAV_LINKS.map((l) => {
-              const active = pathname === l.href;
-              return (
-                <Button
-                  key={l.href}
-                  component={Link}
-                  href={l.href}
-                  color="inherit"
-                  startIcon={l.icon}
-                  sx={{
-                    borderRadius: "20px",
-                    px: 2,
-                    py: 0.75,
-                    fontWeight: active ? 700 : 500,
-                    bgcolor: active ? "rgba(255,255,255,0.18)" : "transparent",
-                    border: "1.5px solid",
-                    borderColor: active ? "rgba(255,255,255,0.45)" : "transparent",
-                    "&:hover": {
-                      bgcolor: "rgba(255,255,255,0.12)",
-                      borderColor: "rgba(255,255,255,0.25)",
-                    },
-                    transition: "all 0.18s ease",
-                  }}
-                >
-                  {l.label}
-                </Button>
-              );
-            })}
-          </Box>
-
-          {/* Mobile hamburger */}
-          <Box sx={{ display: { xs: "flex", sm: "none" } }}>
-            <IconButton color="inherit" onClick={() => setOpen(true)} size="medium">
-              <MenuIcon />
-            </IconButton>
-          </Box>
+          <IconButton color="inherit" onClick={() => setOpen(true)} size="medium">
+            <MenuIcon />
+          </IconButton>
         </Toolbar>
       </AppBar>
 
@@ -93,7 +79,14 @@ export default function NavBar() {
         anchor="right"
         open={open}
         onClose={() => setOpen(false)}
-        sx={{ "& .MuiDrawer-paper": { width: 265, borderRadius: "12px 0 0 12px" } }}
+        sx={{
+          display: { xs: "block", lg: "none" },
+          "& .MuiDrawer-paper": {
+            width: 265,
+            bgcolor: SIDEBAR_BG,
+            borderRadius: "14px 0 0 14px",
+          },
+        }}
       >
         <Box
           sx={{
@@ -101,25 +94,39 @@ export default function NavBar() {
             alignItems: "center",
             justifyContent: "space-between",
             px: 2.5,
-            py: 1.75,
-            bgcolor: "primary.dark",
-            color: "white",
+            py: 2,
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-            <NotificationsActiveIcon sx={{ fontSize: 20 }} />
-            <Typography variant="subtitle1" sx={{ fontWeight: 700 }}>
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1.25 }}>
+            <Box
+              sx={{
+                width: 32,
+                height: 32,
+                borderRadius: "8px",
+                bgcolor: SIDEBAR_ACTIVE,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <NotificationsActiveIcon sx={{ fontSize: 18, color: "white" }} />
+            </Box>
+            <Typography sx={{ color: "white", fontWeight: 700, fontSize: "0.95rem" }}>
               AffordMed
             </Typography>
           </Box>
-          <IconButton color="inherit" onClick={() => setOpen(false)} size="small">
+          <IconButton
+            onClick={() => setOpen(false)}
+            size="small"
+            sx={{ color: "rgba(255,255,255,0.5)", "&:hover": { color: "white" } }}
+          >
             <CloseIcon fontSize="small" />
           </IconButton>
         </Box>
 
-        <Divider />
+        <Divider sx={{ borderColor: "rgba(255,255,255,0.06)", mx: 2 }} />
 
-        <List sx={{ pt: 1.5, px: 1 }}>
+        <List sx={{ pt: 2, px: 1.5, display: "flex", flexDirection: "column", gap: 0.5 }}>
           {NAV_LINKS.map((l) => {
             const active = pathname === l.href;
             return (
@@ -127,33 +134,30 @@ export default function NavBar() {
                 key={l.href}
                 component={Link}
                 href={l.href}
-                selected={active}
                 onClick={() => setOpen(false)}
                 sx={{
-                  borderRadius: 2,
-                  mb: 0.5,
-                  "&.Mui-selected": {
-                    bgcolor: "primary.main",
+                  borderRadius: "10px",
+                  px: 1.5,
+                  py: 1,
+                  color: active ? "white" : "rgba(255,255,255,0.5)",
+                  bgcolor: active ? SIDEBAR_ACTIVE : "transparent",
+                  "&:hover": {
+                    bgcolor: active ? SIDEBAR_ACTIVE : "rgba(255,255,255,0.07)",
                     color: "white",
-                    "& .MuiListItemIcon-root": { color: "white" },
-                    "&:hover": { bgcolor: "primary.dark" },
                   },
+                  transition: "all 0.15s ease",
                 }}
               >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 36,
-                    color: active ? "white" : "text.secondary",
-                  }}
-                >
+                <ListItemIcon sx={{ minWidth: 34, color: "inherit" }}>
                   {l.icon}
                 </ListItemIcon>
                 <ListItemText
                   primary={l.label}
                   sx={{
                     "& .MuiListItemText-primary": {
-                      fontWeight: active ? 700 : 400,
-                      fontSize: "0.9rem",
+                      fontSize: "0.875rem",
+                      fontWeight: active ? 600 : 400,
+                      color: "inherit",
                     },
                   }}
                 />
